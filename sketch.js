@@ -188,7 +188,7 @@ function drawAllBuildings(){
   t1 += noiseFactor;
   drawBuildings(83,33.90,48,18,color(225, 201, 41));
   drawBuildings(92,21.90,24,68,color(175,57,43));
-  drawBuildings(92,52,24,13,color(217, 214, 209));
+  
 
   
   drawBuildings(152,21.90,44,52,color(175,57,43));
@@ -232,7 +232,6 @@ function drawAllBuildings(){
   // Draw the expanded yellow building
   drawBuildings(225, yPos, 36, newHeight, color(225, 201, 41)); 
 
-  drawBuildings(225,268,36,25,color(217, 214, 209));
 
   drawBuildings(392,256,43,77,color(175,57,43));
   drawBuildings(402,275,24,20,color(217, 214, 209));
@@ -245,16 +244,40 @@ function drawAllBuildings(){
 
   drawBuildings(475,368.5,36,33.5,color(76,102,197));
   drawBuildings(475,402,36,18,color(225, 201, 41));
-// Red building expansion and gradient
-drawBuildings(520,420,36 * -LOexpandRed,33.5,color(175,57,43));
+  // Red building expansion and gradient
+  drawBuildings(520,420,36 * -LOexpandRed,33.5,color(175,57,43));
 
   drawBuildings(83,430,47.6,39,color(225, 201, 41));
-  drawBuildings(100,439,16,13,color(217, 214, 209));
 
   drawBuildings(0,485,36,14,color(225, 201, 41));
   drawBuildings(18,485,14,14,color(175,57,43));
 
   drawBuildings(249,528,36,22,color(175,57,43));
+   // Use Perlin noise to dynamically resize grey buildings
+  let grayBuildingWidth1 = map(noise(frameCount * 0.03 + 100), 0, 1, 20, 100);  // Width of The grey building above
+  let grayBuildingHeight1 = map(noise(frameCount * 0.02 + 1000), 0, 1, 10, 60); // Heighth of The grey building above
+  
+  let grayBuildingWidth2 = map(noise(frameCount * 0.03 + 200), 0, 1, 40, 90);  // Width of grey building in the middle
+  let grayBuildingHeight2 = map(noise(frameCount * 0.02 + 2000), 0, 1, 30, 200); // Heighth of grey building in the middle
+  
+  let grayBuildingWidth3 = map(noise(frameCount * 0.03 + 300), 0, 1, 30, 200);  // Width of The grey building blew
+  let grayBuildingHeight3 = map(noise(frameCount * 0.02 + 3000), 0, 1, 10, 40); // Heighth of The grey building blew
+
+  // Dynamically draw resized grey buildings
+  // The grey building above
+  let grayBuildingX1 = 108 - grayBuildingWidth1 / 2; // x
+  let grayBuildingY1 = 58 - grayBuildingHeight1 / 2; // y
+  // Gray building in the middle
+  let grayBuildingX2 = 244 - grayBuildingWidth2 / 2; // x
+  let grayBuildingY2 = 278 - grayBuildingHeight2 / 2; // y
+  // The grey building below
+  let grayBuildingX3 = 108 - grayBuildingWidth3 / 2; // x
+  let grayBuildingY3 = 448 - grayBuildingHeight3 / 2; // y
+
+  // Draw these three grey dynamically changing buildings in size
+  drawBuildings(grayBuildingX1, grayBuildingY1, grayBuildingWidth1, grayBuildingHeight1, color(217, 214, 209)); // Top gray building
+  drawBuildings(grayBuildingX2, grayBuildingY2, grayBuildingWidth2, grayBuildingHeight2, color(217, 214, 209)); // Middle gray building
+  drawBuildings(grayBuildingX3, grayBuildingY3, grayBuildingWidth3, grayBuildingHeight3, color(217, 214, 209)); // Botton gray building
 
 }
 // Main drawing function called on each frame
