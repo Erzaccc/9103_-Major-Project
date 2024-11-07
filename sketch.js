@@ -149,6 +149,72 @@ function drawAllBlocks() {
 // Main drawing function called on each frame
 function draw() {
   background(242, 243, 238);
+  drawAllBuildings()
   drawAllBlocks();
 }
+// Function to draw all buildings
+function drawAllBuildings(){
+  drawBuildings(83,33.90,48,18,color(225, 201, 41));
+  drawBuildings(92,21.90,24,68,color(175,57,43));
+  drawBuildings(92,52,24,13,color(217, 214, 209));
 
+  
+  drawBuildings(152,21.90,44,52,color(175,57,43));
+  drawBuildings(162,38.90,23,20,color(217, 214, 209));
+  drawBuildings(152,73.90,44,15.8,color(217, 214, 209));
+ 
+
+  drawBuildings(498.5,56,36,20,color(76,102,197));
+
+  drawBuildings(47,112,36,33,color(76,102,197));
+
+  drawBuildings(83,160,47.6,33,color(225, 201, 41));
+  drawBuildings(100,168,16,14,color(217, 214, 209));
+
+
+  drawBuildings(360,100,50,100.5,color(76,102,197));
+  drawBuildings(360,130,50,48,color(175,57,43));
+  drawBuildings(375,145,25,20,color(225, 201, 41));
+
+  drawBuildings(486.5,112,36,33,color(175,57,43));
+
+  drawBuildings(95.5,212,22.5,35,color(225, 201, 41));
+  drawBuildings(100,222,13,12,color(217, 214, 209));
+
+  drawBuildings(83,277.2,47.6,35,color(175,57,43));
+
+  drawBuildings(166,256,36,56.6,color(225, 201, 41));
+  drawBuildings(166,270,36,42.6,color(76,102,197));
+  drawBuildings(173,283,21.5,16,color(225, 201, 41));
+
+  drawBuildings(225,212,36,101,color(225, 201, 41));
+  drawBuildings(225,268,36,25,color(217, 214, 209));
+
+  drawBuildings(392,256,43,77,color(175,57,43));
+  drawBuildings(402,275,24,20,color(217, 214, 209));
+  drawBuildings(392,333,43,15,color(217, 214, 209));
+
+  drawBuildings(475,273,60,25,color(225, 201, 41));
+  drawBuildings(499,273,12,25,color(175,57,43));
+
+  drawBuildings(47,368.5,36,33.5,color(76,102,197));
+
+  drawBuildings(475,368.5,36,33.5,color(76,102,197));
+  drawBuildings(475,402,36,18,color(225, 201, 41));
+  drawBuildings(475,420,36,33.5,color(175,57,43));
+
+  drawBuildings(83,430,47.6,39,color(225, 201, 41));
+  drawBuildings(100,439,16,13,color(217, 214, 209));
+
+  drawBuildings(0,485,36,14,color(225, 201, 41));
+  drawBuildings(18,485,14,14,color(175,57,43));
+
+  drawBuildings(249,528,36,22,color(175,57,43));
+
+}
+// Function to draw individual buildings
+function drawBuildings(x,y,width,height,color){
+  fill(color);
+  rect(x,y,width,height);
+  noStroke();;
+}
