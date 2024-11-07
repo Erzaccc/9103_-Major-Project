@@ -175,8 +175,17 @@ function drawBuildings(x,y,width,height,color){
   noStroke();;
 }
 
+let noiseFactor = 0.03; // Control the rate of expansion and contraction
+let t1 = 2; // Time variable, used to drive Perlin noise
 // Function to draw all buildings
 function drawAllBuildings(){
+
+  // Expansion coefficient
+  let LOexpandBlue = map(noise(t1), 0, 1, 1.0, (width - 36) / 36); // The blue building expands horizontally
+  let LOexpandRed = map(noise(t1 + 1000), 0, 1, 1.0, (width - 36) / 36); // The red building expands horizontally
+  let expandYellowHeight = map(noise(t1 + 1000), 0, 1, 0.5, 10); // The yellow building extends in all directions
+  // Update Perlin noise time
+  t1 += noiseFactor;
   drawBuildings(83,33.90,48,18,color(225, 201, 41));
   drawBuildings(92,21.90,24,68,color(175,57,43));
   drawBuildings(92,52,24,13,color(217, 214, 209));
@@ -189,7 +198,8 @@ function drawAllBuildings(){
 
   drawBuildings(498.5,56,36,20,color(76,102,197));
 
-  drawBuildings(47,112,36,33,color(76,102,197));
+  // Blue building extension
+  drawBuildings(47, 112, 36 * LOexpandBlue, 33, color(76, 102, 197)); 
 
   drawBuildings(83,160,47.6,33,color(225, 201, 41));
   drawBuildings(100,168,16,14,color(217, 214, 209));
@@ -210,7 +220,18 @@ function drawAllBuildings(){
   drawBuildings(166,270,36,42.6,color(76,102,197));
   drawBuildings(173,283,21.5,16,color(225, 201, 41));
 
-  drawBuildings(225,212,36,101,color(225, 201, 41));
+   // Use Perlin Noise to extend the height of the yellow building at the center location
+  let newHeight = 101 * expandYellowHeight; 
+  
+  // Limit the maximum height of the building (prevent exceeding the upper and lower boundaries of the canvas)
+  newHeight = constrain(newHeight, 50, height - 50); 
+  
+  // Center the building on the y coordinate
+  let yPos = 212 - (newHeight - 101) / 2; 
+  
+  // Draw the expanded yellow building
+  drawBuildings(225, yPos, 36, newHeight, color(225, 201, 41)); 
+
   drawBuildings(225,268,36,25,color(217, 214, 209));
 
   drawBuildings(392,256,43,77,color(175,57,43));
@@ -224,7 +245,8 @@ function drawAllBuildings(){
 
   drawBuildings(475,368.5,36,33.5,color(76,102,197));
   drawBuildings(475,402,36,18,color(225, 201, 41));
-  drawBuildings(475,420,36,33.5,color(175,57,43));
+// Red building expansion and gradient
+drawBuildings(520,420,36 * -LOexpandRed,33.5,color(175,57,43));
 
   drawBuildings(83,430,47.6,39,color(225, 201, 41));
   drawBuildings(100,439,16,13,color(217, 214, 209));
