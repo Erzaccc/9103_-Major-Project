@@ -189,13 +189,6 @@ function drawAllBuildings(){
   drawBuildings(83,33.90,48,18,color(225, 201, 41));
   drawBuildings(92,21.90,24,68,color(175,57,43));
   
-
-  
-  drawBuildings(152,21.90,44,52,color(175,57,43));
-  drawBuildings(162,38.90,23,20,color(217, 214, 209));
-  drawBuildings(152,73.90,44,15.8,color(217, 214, 209));
- 
-
   drawBuildings(498.5,56,36,20,color(76,102,197));
 
   // Blue building extension
@@ -237,11 +230,6 @@ function drawAllBuildings(){
   drawBuildings(402,275,24,20,color(217, 214, 209));
   drawBuildings(392,333,43,15,color(217, 214, 209));
 
-  drawBuildings(475,273,60,25,color(225, 201, 41));
-  drawBuildings(499,273,12,25,color(175,57,43));
-
-  drawBuildings(47,368.5,36,33.5,color(76,102,197));
-
   drawBuildings(475,368.5,36,33.5,color(76,102,197));
   drawBuildings(475,402,36,18,color(225, 201, 41));
   // Red building expansion and gradient
@@ -280,11 +268,31 @@ function drawAllBuildings(){
   drawBuildings(grayBuildingX3, grayBuildingY3, grayBuildingWidth3, grayBuildingHeight3, color(217, 214, 209)); // Botton gray building
 
 }
+
+// In order to allow individual buildings to be covered above the 'road'(AllBlocks), a new function was created
+function drawMoveBuildings(){
+  // Use Perlin noise for smooth movement
+  let blueOffset = map(noise(frameCount * 0.02), 0, 1, -40, 100);  // Blue
+  let redOffset = map(noise(frameCount * 0.01 + 1000), 0, 1, -60, 300); // Red
+  let yellowOffset = map(noise(frameCount * 0.01 + 2000), 0, 1, -100, 180); // Yellow
+  // The red building moves horizontally 
+  drawBuildings(152 + redOffset, 21.90, 44, 52, color(175,57,43)); // Red Building
+  drawBuildings(162 + redOffset, 38.90, 23, 20, color(217, 214, 209));//Red building on gray building
+  drawBuildings(152 + redOffset, 73.90, 44, 15.8, color(217, 214, 209));//Red building on gray building
+
+  // The blue building moves horizontally
+  drawBuildings(47 + blueOffset, 368.5, 36, 33.5, color(76,102,197));
+  // The yellow building is vertically offset
+  drawBuildings(475,273 + yellowOffset,60,25,color(225, 201, 41)); 
+  drawBuildings(499,273 + yellowOffset,12,25,color(175,57,43));
+}
+
 // Main drawing function called on each frame
 function draw() {
   background(242, 243, 238);
   drawAllBuildings()
   drawAllBlocks();
+  drawMoveBuildings();
 }
 
 // Resizes the canvas and centers it when the window is resized
