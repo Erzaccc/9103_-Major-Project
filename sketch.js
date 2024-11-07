@@ -119,28 +119,53 @@ class Block {
 // Function to draw all blocks
 // This technique is from https://p5js.org/reference/p5/draw/
 function drawAllBlocks() {
+  let t = frameCount * 0.02;
+  
+  // Draw red blocks
   for (let redBlock of redBlocks) {
     fill(redBlock.color);
     noStroke();
     rect(redBlock.x, redBlock.y, redBlock.width, redBlock.height);
   }
+
+  //Draw yellow block
   for (let yellowBlock of yellowBlocks) {
-    fill(yellowBlock.color);
-    noStroke();
-    rect(yellowBlock.x, yellowBlock.y, yellowBlock.width, yellowBlock.height);
+    // Use time to dynamically adjust color changes
+   let tOffset = frameCount * 0.06; 
+   // Use Perlin noise to generate dynamically changing colors
+   let r = map(noise(yellowBlock.x * 0.3, tOffset), 0, 1, 180, 255,); // Red value
+   let g = map(noise(yellowBlock.y * 0.3 + 1000, tOffset), 0, 1, 200, 255, 60); // Yellow value
+   let b = map(noise(yellowBlock.x * 0.3 + 2000, tOffset), 0, 1, 0, 120); // Blue Value
+   fill(r, g, b); 
+   noStroke();
+   rect(yellowBlock.x, yellowBlock.y, yellowBlock.width, yellowBlock.height);
   }
-  for (let blueBlock of blueBlocks) {
-    fill(blueBlock.color);
-    noStroke();
-    rect(blueBlock.x, blueBlock.y, blueBlock.width, blueBlock.height);
+  
+  
+  // Draw the blue square and add the transparency change
+  for (let blueBlock of blueBlocks) { 
+  let tOffset = frameCount * 0.03; // Used to generate different noise values that affect transparency
+  // Use Perlin noise to adjust transparency (alpha channel)
+  let alpha = map(noise(blueBlock.x * 0.1, blueBlock.y * 0.1, tOffset), 0, 1, 30, 255); // 透明度值在50到255之间变化 
+  
+  fill(0, 80, 255, alpha); // Blue and add transparency
+  noStroke(); 
+  rect(blueBlock.x, blueBlock.y, blueBlock.width, blueBlock.height); 
   }
+  // Draw a gray square, adding synchronous transparency and color changes
+  let tOffset = frameCount * 0.03; // Uniform noise offset for all gray squares
+  
+  // Use Perlin noise to adjust transparency (alpha channel) and grayscale
+  let alpha = map(noise(tOffset), 0, 1, 20, 200); // Transparency values range from 50 to 255
+  let grayValue = map(noise(tOffset + 1000), 0, 1, 0, 100); // Grayscale values are between 100 and 200
+
+  // Apply uniform color and transparency to all gray squares
   for (let grayBlock of grayBlocks) {
-    fill(grayBlock.color);
+    fill(grayValue, grayValue, grayValue, alpha); // Grey, add transparency
     noStroke();
     rect(grayBlock.x, grayBlock.y, grayBlock.width, grayBlock.height);
   }
 }
-
 
 
 // Function to draw individual buildings
