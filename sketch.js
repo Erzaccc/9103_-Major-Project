@@ -6,7 +6,8 @@ function setup() {
   noLoop();
   drawMondrianGrid(); 
   randomlyColorYellowLines(); 
-  drawAxisLabels();
+  drawAxisLabels(); 
+  overlayNewYellowAreas(); 
 }
 
 function drawMondrianGrid() {
@@ -125,3 +126,27 @@ function drawAxisLabels() {
     text(y / gridSize, 10, y + gridSize / 2); 
   } 
 }
+
+function overlayNewYellowAreas() { 
+  let gridSize = 16; // Grid size 
+  fill(255, 204, 0); // Yellow 
+
+  // Overlay specific areas in yellow on a new layer 
+  let newYellowAreas = [ 
+    { xRange: [6, 9], yRange: [42, 45] }, 
+    { xRange: [40, 42], yRange: [37, 38] }, 
+    { xRange: [6, 9], yRange: [14, 17] }, 
+    { xRange: [19, 21], yRange: [24, 25] } 
+  ]; 
+  
+  for (let area of newYellowAreas) { 
+    for (let x = area.xRange[0]; x <= area.xRange[1]; x++) { 
+      for (let y = area.yRange[0]; y <= area.yRange[1]; y++) { 
+        let currentX = x * gridSize; 
+        let currentY = y * gridSize; 
+        rect(currentX, currentY, gridSize, gridSize); 
+      } 
+    } 
+  } 
+}
+
