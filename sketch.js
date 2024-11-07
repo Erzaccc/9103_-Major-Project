@@ -73,12 +73,7 @@ let grayBlocks = [];
 let canvas;
 
 
-// Resizes the canvas and centers it when the window is resized
-//This technique is from https://p5js.org/reference/p5/windowResized/
-function windowResized() {
-  resizeCanvas(558, 558);
-  canvas.position(windowWidth / 2 - width / 2, windowHeight / 2 - height / 2);
-}
+
 
 // setup function is called once at the start of the program, initializes the canvas and creates blocks
 function setup() {
@@ -146,12 +141,15 @@ function drawAllBlocks() {
   }
 }
 
-// Main drawing function called on each frame
-function draw() {
-  background(242, 243, 238);
-  drawAllBuildings()
-  drawAllBlocks();
+
+
+// Function to draw individual buildings
+function drawBuildings(x,y,width,height,color){
+  fill(color);
+  rect(x,y,width,height);
+  noStroke();;
 }
+
 // Function to draw all buildings
 function drawAllBuildings(){
   drawBuildings(83,33.90,48,18,color(225, 201, 41));
@@ -212,9 +210,16 @@ function drawAllBuildings(){
   drawBuildings(249,528,36,22,color(175,57,43));
 
 }
-// Function to draw individual buildings
-function drawBuildings(x,y,width,height,color){
-  fill(color);
-  rect(x,y,width,height);
-  noStroke();;
+// Main drawing function called on each frame
+function draw() {
+  background(242, 243, 238);
+  drawAllBuildings()
+  drawAllBlocks();
+}
+
+// Resizes the canvas and centers it when the window is resized
+//This technique is from https://p5js.org/reference/p5/windowResized/
+function windowResized() {
+  resizeCanvas(558, 558);
+  canvas.position(windowWidth / 2 - width / 2, windowHeight / 2 - height / 2);
 }
