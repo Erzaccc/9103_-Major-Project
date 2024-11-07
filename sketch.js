@@ -72,19 +72,17 @@ let grayBlocks = [];
 // Variable to hold the canvas object
 let canvas;
 
-
-
-
 // setup function is called once at the start of the program, initializes the canvas and creates blocks
 function setup() {
-  // Create canvas and center it in the window
-   canvas = createCanvas(558, 558);
+   // Create canvas and center it in the window
+  canvas = createCanvas(558, 558);
   canvas.position(windowWidth / 2 - width / 2, windowHeight / 2 - height / 2);
-  //for Loop through each row in roadMetrics
+  
+ //for Loop through each row in roadMetrics
   for (let i = 0; i < roadMetrics.length; i++) {
     let row = roadMetrics[i];
     console.log(row.length);  
-     // Loop through each element in the row
+    // Loop through each element in the row
     for (let j = 0; j < row.length; j++) {
       // Based on the element's value, create blocks of different colors and add them to the respective arrays
       switch(row[j]) {
@@ -119,7 +117,7 @@ class Block {
 // Function to draw all blocks
 // This technique is from https://p5js.org/reference/p5/draw/
 function drawAllBlocks() {
-  let t = frameCount * 0.02;
+  
   
   // Draw red blocks
   for (let redBlock of redBlocks) {
@@ -152,7 +150,10 @@ function drawAllBlocks() {
   noStroke(); 
   rect(blueBlock.x, blueBlock.y, blueBlock.width, blueBlock.height); 
   }
-  // Draw a gray square, adding synchronous transparency and color changes
+  
+
+
+ // Draw a gray square, adding synchronous transparency and color changes
   let tOffset = frameCount * 0.03; // Uniform noise offset for all gray squares
   
   // Use Perlin noise to adjust transparency (alpha channel) and grayscale
@@ -167,7 +168,6 @@ function drawAllBlocks() {
   }
 }
 
-
 // Function to draw individual buildings
 function drawBuildings(x,y,width,height,color){
   fill(color);
@@ -175,30 +175,38 @@ function drawBuildings(x,y,width,height,color){
   noStroke();;
 }
 
+
+
 let noiseFactor = 0.03; // Control the rate of expansion and contraction
 let t1 = 2; // Time variable, used to drive Perlin noise
+
 // Function to draw all buildings
 function drawAllBuildings(){
-
+  
   // Expansion coefficient
   let LOexpandBlue = map(noise(t1), 0, 1, 1.0, (width - 36) / 36); // The blue building expands horizontally
   let LOexpandRed = map(noise(t1 + 1000), 0, 1, 1.0, (width - 36) / 36); // The red building expands horizontally
   let expandYellowHeight = map(noise(t1 + 1000), 0, 1, 0.5, 10); // The yellow building extends in all directions
   // Update Perlin noise time
   t1 += noiseFactor;
+
+  // Gradation
+  let Alpha = map(noise(t1 + 500), 0, 1, 50, 255); 
+
   drawBuildings(83,33.90,48,18,color(225, 201, 41));
   drawBuildings(92,21.90,24,68,color(175,57,43));
-  
+ 
   drawBuildings(498.5,56,36,20,color(76,102,197));
 
   // Blue building extension
   drawBuildings(47, 112, 36 * LOexpandBlue, 33, color(76, 102, 197)); 
 
-  drawBuildings(83,160,47.6,33,color(225, 201, 41));
+ //Yellow building gradient
+  drawBuildings(83,160,47.6,33,color(225, 201, 41, Alpha));
   drawBuildings(100,168,16,14,color(217, 214, 209));
 
-
-  drawBuildings(360,100,50,100.5,color(76,102,197));
+  // Blue building gradient
+  drawBuildings(360,100,50,100.5,color(76,102,197,Alpha));
   drawBuildings(360,130,50,48,color(175,57,43));
   drawBuildings(375,145,25,20,color(225, 201, 41));
 
@@ -213,7 +221,7 @@ function drawAllBuildings(){
   drawBuildings(166,270,36,42.6,color(76,102,197));
   drawBuildings(173,283,21.5,16,color(225, 201, 41));
 
-   // Use Perlin Noise to extend the height of the yellow building at the center location
+  // Use Perlin Noise to extend the height of the yellow building at the center location
   let newHeight = 101 * expandYellowHeight; 
   
   // Limit the maximum height of the building (prevent exceeding the upper and lower boundaries of the canvas)
@@ -225,22 +233,22 @@ function drawAllBuildings(){
   // Draw the expanded yellow building
   drawBuildings(225, yPos, 36, newHeight, color(225, 201, 41)); 
 
-
-  drawBuildings(392,256,43,77,color(175,57,43));
+  // Red building gradient
+  drawBuildings(392,256,43,77,color(175,57,43, Alpha));
+  
   drawBuildings(402,275,24,20,color(217, 214, 209));
   drawBuildings(392,333,43,15,color(217, 214, 209));
-
   drawBuildings(475,368.5,36,33.5,color(76,102,197));
   drawBuildings(475,402,36,18,color(225, 201, 41));
   // Red building expansion and gradient
-  drawBuildings(520,420,36 * -LOexpandRed,33.5,color(175,57,43));
-
+  drawBuildings(520,420,36 * -LOexpandRed,33.5,color(175,57,43, Alpha));
   drawBuildings(83,430,47.6,39,color(225, 201, 41));
 
   drawBuildings(0,485,36,14,color(225, 201, 41));
   drawBuildings(18,485,14,14,color(175,57,43));
 
   drawBuildings(249,528,36,22,color(175,57,43));
+
    // Use Perlin noise to dynamically resize grey buildings
   let grayBuildingWidth1 = map(noise(frameCount * 0.03 + 100), 0, 1, 20, 100);  // Width of The grey building above
   let grayBuildingHeight1 = map(noise(frameCount * 0.02 + 1000), 0, 1, 10, 60); // Heighth of The grey building above
@@ -263,10 +271,9 @@ function drawAllBuildings(){
   let grayBuildingY3 = 448 - grayBuildingHeight3 / 2; // y
 
   // Draw these three grey dynamically changing buildings in size
-  drawBuildings(grayBuildingX1, grayBuildingY1, grayBuildingWidth1, grayBuildingHeight1, color(217, 214, 209)); // Top gray building
+  drawBuildings(grayBuildingX1, grayBuildingY1, grayBuildingWidth1, grayBuildingHeight1, color(217, 214, 209,Alpha)); // Top gray building
   drawBuildings(grayBuildingX2, grayBuildingY2, grayBuildingWidth2, grayBuildingHeight2, color(217, 214, 209)); // Middle gray building
   drawBuildings(grayBuildingX3, grayBuildingY3, grayBuildingWidth3, grayBuildingHeight3, color(217, 214, 209)); // Botton gray building
-
 }
 
 // In order to allow individual buildings to be covered above the 'road'(AllBlocks), a new function was created
@@ -292,12 +299,12 @@ function draw() {
   background(242, 243, 238);
   drawAllBuildings()
   drawAllBlocks();
-  drawMoveBuildings();
+  drawMoveBuildings()
 }
-
 // Resizes the canvas and centers it when the window is resized
 //This technique is from https://p5js.org/reference/p5/windowResized/
 function windowResized() {
   resizeCanvas(558, 558);
   canvas.position(windowWidth / 2 - width / 2, windowHeight / 2 - height / 2);
 }
+
