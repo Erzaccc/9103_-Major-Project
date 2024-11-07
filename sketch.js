@@ -1,127 +1,220 @@
-let yellowBlocks = []; // Global variable to store positions of all yellow blocks 
-let yellowLines = []; // Global variable to store positions of all yellow line paths
+// Define grid data. roadMetrics is a 2D array where each sub-array represents a row on the map.
+// Numbers indicate different colors for blocks: 0-blank, 1-yellow, 2-red, 3-blue, 4-gray.
+let roadMetrics = [
+  [0,1,0,2,0,0,1,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,1,0,2,0],
+  [1,3,1,1,1,1,1,1,3,1,4,1,1,1,1,1,4,1,1,1,1,1,1,1,4,1,4,1,4,1,1,1,1,4,4,1,1,1,4,3,1,4,1,3,4,1,4],
 
-function setup() {
-  createCanvas(800, 800);
-  noLoop();
-  drawMondrianGrid(); 
-  randomlyColorYellowLines(); 
-  drawAxisLabels();
-}
+  [0,4,0,4,0,0,1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,3,0,4,0,2,0],
+  [0,1,0,1,0,0,4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,2,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,1,0,4,0],
+  [0,1,0,1,0,0,4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,4,0,1,0],
+  [0,3,0,2,0,0,3,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,0,0,2,0],
+  [0,1,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,3,0,1,0,0,0,1,0],
+  [0,1,0,4,0,0,1,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,0,0,4,0],
 
-function drawMondrianGrid() {
-  let gridSize = 16; // Grid size 
-  let colors = [
-    color(255, 255, 255), // White 
-    color(255, 204, 0), // Yellow 
-    color(255, 0, 0), // Red 
-    color(128, 128, 128), // Gray 
-    color(0, 102, 204) // Blue 
-  ];
+  [1,2,1,1,1,1,3,1,4,4,2,1,4,1,3,1,1,4,1,1,1,1,1,1,4,3,1,2,4,1,1,1,1,1,1,4,1,1,4,3,4,1,2,1,4,3,1],
 
-  let predefinedConditions = [ 
-    { xRange: [7, 9], yRange: [2, 4], colorIndex: 2 },
-    { xRange: [7, 9], yRange: [6, 6], colorIndex: 3 },
-    { xRange: [7, 9], yRange: [7, 9], colorIndex: 2 },
-    { xRange: [6, 9], yRange: [14, 17], colorIndex: 1 },
-    { xRange: [7, 8], yRange: [20, 22], colorIndex: 1 },
-    { xRange: [6, 9], yRange: [28, 30], colorIndex: 2 },
-    { xRange: [21, 23], yRange: [48, 49], colorIndex: 2 },
-    { xRange: [41, 43], yRange: [10, 13], colorIndex: 2 },
-    { xRange: [40, 42], yRange: [35, 40], colorIndexSequence: [4, 1, 2], alternate: true },
-    { xRange: [18, 21], yRange: [19, 30], colorIndex: 1, exceptions: [23, 26, 27, 28, 29], exceptionColorIndex: 3 },
-    { xRange: [12, 15], yRange: [2, 5], colorIndex: 2 },
-    { xRange: [12, 15], yRange: [2, 7], colorIndex: 3 },
-    { xRange: [13, 14], yRange: [3, 4], colorIndex: 3 },
-    { xRange: [30, 33], yRange: [9, 18], colorIndex: 4 },
-    { xRange: [31, 34], yRange: [24, 30], colorIndex: 2 },
-    { xRange: [6, 9], yRange: [42, 45], colorIndex: 1 },
-    { xRange: [8, 8], yRange: [44, 44], colorIndex: 3 },
-    { xRange: [40, 44], yRange: [24, 30], colorIndex: 0 },
-    { xRange: [40, 44], yRange: [26, 28], colorIndex: 1 },
-    { xRange: [42, 44], yRange: [5, 7], colorIndex: 4 },
-    { xRange: [4, 5], yRange: [10, 12], colorIndex: 4 },
-    { xRange: [2, 3], yRange: [36, 37], colorIndex: 4 }
-  ];
+  [0,1,0,4,0,0,1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,4,0,4,0],
+  [0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [0,3,0,1,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,3,0],
+  [0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0],
+  [0,1,0,4,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,4,0,1,0],
+  [0,2,0,1,0,0,2,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,4,0,1,0,1,0,1,0],
+  [0,1,0,1,0,0,4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,4,0,2,0],
+  [0,1,0,1,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],
+  [0,4,0,1,0,0,3,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],
+
+  [1,2,1,3,1,1,4,2,1,1,4,3,1,1,4,1,3,1,2,1,1,1,3,1,1,2,1,3,1,1,2,1,1,1,2,1,1,1,1,3,1,2,1,4,3,4,1],
+
+  [0,0,0,1,0,0,3,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0],
+  [0,0,0,1,0,0,4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,4,0,1,0],
+  [0,0,0,1,0,0,4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,1,0,4,0],
+
+  [1,2,4,3,1,1,3,4,1,1,4,3,1,1,2,4,4,1,2,4,4,4,3,1,1,4,1,4,1,1,2,4,1,4,1,1,3,1,1,2,1,1,4,2,1,2,4],
+
+  [0,0,0,1,0,0,1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [0,0,0,2,0,0,1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,3,0,0,0,4,0,0,0,0,0,0,0,3,0,0,0,0,0,3,0],
+  [0,0,0,1,0,0,3,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0],
+  [0,0,0,4,0,0,1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+
+  [1,1,4,3,1,1,3,1,1,1,1,3,1,1,4,1,2,1,1,2,4,4,2,1,1,4,1,4,1,1,1,2,1,3,4,4,3,1,1,2,1,1,1,3,4,2,1],
+
+  [0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,2,0,0,0,0,0,0,0,4,0,0,0,0,0,4,0],
+
+  [1,1,4,2,1,1,3,1,1,4,1,3,1,1,4,1,1,3,1,1,2,1,1,3,1,4,1,4,1,1,1,4,1,3,1,3,1,1,1,3,1,1,1,2,4,1,2],
+
+  [0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,3,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,4,0,4,0],
+  [0,0,0,4,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0],
+  [1,3,1,2,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0],
+  [0,0,0,4,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,4,0,2,0],
+  [0,0,0,2,1,1,2,1,1,4,1,3,1,1,1,4,1,1,3,1,1,2,1,3,1,4,2,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,4,0,4,0],
+  [0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3,0,3,0],
+  [1,3,1,2,0,0,3,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,2,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0],
+  [0,0,0,4,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0],
+  [0,0,0,1,0,0,2,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,3,1,1,1,4,1,2,0],
+  [0,0,0,1,0,0,1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
   
-  for (let condition of predefinedConditions) { 
-    for (let x = condition.xRange[0]; x <= condition.xRange[1]; x++) { 
-      for (let y = condition.yRange[0]; y <= condition.yRange[1]; y++) { 
-        let currentX = x * gridSize; 
-        let currentY = y * gridSize; 
-        if (condition.exceptions && condition.exceptions.includes(y)) { 
-          fill(colors[condition.exceptionColorIndex]); 
-        } else if (condition.alternate) { 
-          let colorIndex = condition.colorIndexSequence[Math.floor((y - condition.yRange[0]) / 2) % condition.colorIndexSequence.length]; 
-          fill(colors[colorIndex]); 
-          if (colorIndex === 1) { 
-            yellowBlocks.push({ x: currentX, y: currentY }); 
-            yellowLines.push({ x: currentX, y: currentY }); 
-          } 
-        } else { 
-          fill(colors[condition.colorIndex]); 
-          if (condition.colorIndex === 1) { 
-            yellowBlocks.push({ x: currentX, y: currentY }); 
-            yellowLines.push({ x: currentX, y: currentY }); 
-          } 
-        } 
-        rect(currentX, currentY, gridSize, gridSize); 
-      } 
-    } 
+  [1,4,1,3,1,1,3,1,1,2,4,3,1,1,1,4,1,1,3,1,2,1,3,2,1,3,1,2,1,3,1,2,1,3,1,1,4,1,1,2,1,1,3,1,1,2,1],
+  [0,0,0,4,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [0,0,0,1,0,0,3,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,4,0],
+  [0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [0,0,0,4,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,3,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+  [1,1,4,2,1,1,3,1,1,2,1,3,1,4,1,1,4,1,3,1,3,2,2,2,1,4,1,4,1,2,1,3,1,3,1,1,4,1,1,3,1,1,2,1,1,2,1],
+  [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,1,0],
+  [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0]
+];
+// Define arrays to store blocks of different colors
+let redBlocks = [];
+let yellowBlocks = [];
+let blueBlocks = [];
+let grayBlocks = [];
+// Variable to hold the canvas object
+let canvas;
+
+
+// Resizes the canvas and centers it when the window is resized
+//This technique is from https://p5js.org/reference/p5/windowResized/
+function windowResized() {
+  resizeCanvas(558, 558);
+  canvas.position(windowWidth / 2 - width / 2, windowHeight / 2 - height / 2);
+}
+
+// setup function is called once at the start of the program, initializes the canvas and creates blocks
+function setup() {
+  // Create canvas and center it in the window
+   canvas = createCanvas(558, 558);
+  canvas.position(windowWidth / 2 - width / 2, windowHeight / 2 - height / 2);
+  //for Loop through each row in roadMetrics
+  for (let i = 0; i < roadMetrics.length; i++) {
+    let row = roadMetrics[i];
+    console.log(row.length);  
+     // Loop through each element in the row
+    for (let j = 0; j < row.length; j++) {
+      // Based on the element's value, create blocks of different colors and add them to the respective arrays
+      switch(row[j]) {
+        case 1:
+          yellowBlocks.push(new Block(color(225, 201, 41), 558 / row.length * j, 558 / 50 * i, 558 / row.length, 558 / 50));
+          break;
+        case 2:
+          redBlocks.push(new Block(color(175,57,43), 558 / row.length * j, 558 / 50 * i, 558 / row.length, 558 / 50));
+          break;
+        case 3:
+          blueBlocks.push(new Block(color(57, 86, 151), 558 / row.length * j, 558 / 50 * i, 558 / row.length, 558 / 50));
+          break;
+        case 4:
+          grayBlocks.push(new Block(color(217, 214, 209), 558 / row.length * j, 558 / 50 * i, 558 / row.length, 558 / 50));
+          break;
+        default:
+          break;
+      }
+    }
   }
-
-  let specificYellowRows = [1, 8, 19, 23, 31, 34, 37, 42, 45, 46, 48];
-  let specificYellowCols = [1, 3, 5, 10, 25, 27, 39, 41, 43, 45];
-
-  for (let x of specificYellowCols) { 
-    for (let y = 0; y < height / gridSize; y++) { 
-      let currentX = x * gridSize; 
-      let currentY = y * gridSize; 
-      fill(colors[1]); 
-      yellowBlocks.push({ x: currentX, y: currentY }); 
-      yellowLines.push({ x: currentX, y: currentY }); 
-      rect(currentX, currentY, gridSize, gridSize); 
-    } 
+}
+// Define a Block class to represent the color and position of each block
+class Block {
+  constructor(color, x, y, width, height) {
+    this.color = color;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
   }
-
-  for (let y of specificYellowRows) { 
-    for (let x = 0; x < width / gridSize; x++) { 
-      let currentX = x * gridSize; 
-      let currentY = y * gridSize; 
-      fill(colors[1]); 
-      yellowBlocks.push({ x: currentX, y: currentY }); 
-      yellowLines.push({ x: currentX, y: currentY }); 
-      rect(currentX, currentY, gridSize, gridSize); 
-    } 
+}
+// Function to draw all blocks
+// This technique is from https://p5js.org/reference/p5/draw/
+function drawAllBlocks() {
+  for (let redBlock of redBlocks) {
+    fill(redBlock.color);
+    noStroke();
+    rect(redBlock.x, redBlock.y, redBlock.width, redBlock.height);
+  }
+  for (let yellowBlock of yellowBlocks) {
+    fill(yellowBlock.color);
+    noStroke();
+    rect(yellowBlock.x, yellowBlock.y, yellowBlock.width, yellowBlock.height);
+  }
+  for (let blueBlock of blueBlocks) {
+    fill(blueBlock.color);
+    noStroke();
+    rect(blueBlock.x, blueBlock.y, blueBlock.width, blueBlock.height);
+  }
+  for (let grayBlock of grayBlocks) {
+    fill(grayBlock.color);
+    noStroke();
+    rect(grayBlock.x, grayBlock.y, grayBlock.width, grayBlock.height);
   }
 }
 
-function randomlyColorYellowLines() { 
-  let colors = [color(128, 128, 128), color(255, 0, 0), color(0, 102, 204)]; // Gray, Red, Blue 
-  let numToCover = Math.floor(yellowLines.length * 0.4); // Only cover 40% of yellow blocks 
-  for (let i = 0; i < numToCover; i++) { 
-    let index = Math.floor(Math.random() * yellowLines.length); 
-    let { x, y } = yellowLines[index]; 
-    let randomColor = colors[Math.floor(Math.random() * colors.length)]; 
-    fill(randomColor); 
-    rect(x, y, 16, 16); 
-    yellowLines.splice(index, 1); // Prevent duplicate coverage 
-  } 
+// Main drawing function called on each frame
+function draw() {
+  background(242, 243, 238);
+  drawAllBuildings()
+  drawAllBlocks();
 }
+// Function to draw all buildings
+function drawAllBuildings(){
+  drawBuildings(83,33.90,48,18,color(225, 201, 41));
+  drawBuildings(92,21.90,24,68,color(175,57,43));
+  drawBuildings(92,52,24,13,color(217, 214, 209));
 
-function drawAxisLabels() { 
-  let gridSize = 16; // Grid size 
-  fill(0); // Black text 
-  textSize(10); 
-  textAlign(CENTER, CENTER); 
+  
+  drawBuildings(152,21.90,44,52,color(175,57,43));
+  drawBuildings(162,38.90,23,20,color(217, 214, 209));
+  drawBuildings(152,73.90,44,15.8,color(217, 214, 209));
+ 
 
-  // Draw X-axis labels 
-  for (let x = 0; x <= width; x += gridSize) { 
-    text(x / gridSize, x + gridSize / 2, 10); 
-  } 
+  drawBuildings(498.5,56,36,20,color(76,102,197));
 
-  // Draw Y-axis labels 
-  for (let y = 0; y <= height; y += gridSize) { 
-    text(y / gridSize, 10, y + gridSize / 2); 
-  } 
+  drawBuildings(47,112,36,33,color(76,102,197));
+
+  drawBuildings(83,160,47.6,33,color(225, 201, 41));
+  drawBuildings(100,168,16,14,color(217, 214, 209));
+
+
+  drawBuildings(360,100,50,100.5,color(76,102,197));
+  drawBuildings(360,130,50,48,color(175,57,43));
+  drawBuildings(375,145,25,20,color(225, 201, 41));
+
+  drawBuildings(486.5,112,36,33,color(175,57,43));
+
+  drawBuildings(95.5,212,22.5,35,color(225, 201, 41));
+  drawBuildings(100,222,13,12,color(217, 214, 209));
+
+  drawBuildings(83,277.2,47.6,35,color(175,57,43));
+
+  drawBuildings(166,256,36,56.6,color(225, 201, 41));
+  drawBuildings(166,270,36,42.6,color(76,102,197));
+  drawBuildings(173,283,21.5,16,color(225, 201, 41));
+
+  drawBuildings(225,212,36,101,color(225, 201, 41));
+  drawBuildings(225,268,36,25,color(217, 214, 209));
+
+  drawBuildings(392,256,43,77,color(175,57,43));
+  drawBuildings(402,275,24,20,color(217, 214, 209));
+  drawBuildings(392,333,43,15,color(217, 214, 209));
+
+  drawBuildings(475,273,60,25,color(225, 201, 41));
+  drawBuildings(499,273,12,25,color(175,57,43));
+
+  drawBuildings(47,368.5,36,33.5,color(76,102,197));
+
+  drawBuildings(475,368.5,36,33.5,color(76,102,197));
+  drawBuildings(475,402,36,18,color(225, 201, 41));
+  drawBuildings(475,420,36,33.5,color(175,57,43));
+
+  drawBuildings(83,430,47.6,39,color(225, 201, 41));
+  drawBuildings(100,439,16,13,color(217, 214, 209));
+
+  drawBuildings(0,485,36,14,color(225, 201, 41));
+  drawBuildings(18,485,14,14,color(175,57,43));
+
+  drawBuildings(249,528,36,22,color(175,57,43));
+
+}
+// Function to draw individual buildings
+function drawBuildings(x,y,width,height,color){
+  fill(color);
+  rect(x,y,width,height);
+  noStroke();;
 }
