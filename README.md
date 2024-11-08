@@ -1,10 +1,11 @@
 # 9103_-Major-Project
 
-Individual final code
+### Individual final code ###
 
-1. There is no interaction design in my work, it is an intuitive animated visual effect.
+## 1. Instructions ##
+ There is no interaction design in my work, it is an intuitive animated visual effect.
 
-2. 
+## 2. Details of individual approach ##
 (1)I chose Perlin Noise to drive my personal code.
 Because the artwork we have chosen is Piet Mondrian 'Broadway Boogie Woogie'.
 
